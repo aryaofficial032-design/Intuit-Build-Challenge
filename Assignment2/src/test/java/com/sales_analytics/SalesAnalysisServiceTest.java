@@ -80,4 +80,29 @@ class SalesAnalysisServiceTest {
         double avg = service.getAverageQuantityByCategory("Toys");
         assertEquals(0.0, avg, 0.01);
     }
+
+    @Test
+    @DisplayName("Should group by category and find the highest value sale in each")
+    void testGetMaxSaleByCategory() {
+        Map<String, Optional<Sale>> result = service.getMaxSaleByCategory();
+
+        // 1. Check Electronics
+        // Laptop (1000) vs Mouse (50) -> Should be Laptop
+        assertTrue(result.containsKey("Electronics"));
+        Sale maxElectronics = result.get("Electronics").orElse(null);
+        assertEquals("Laptop", maxElectronics.getProduct());
+        assertEquals(1000.00, maxElectronics.getTotalRevenue(), 0.01);
+
+        // 2. Check Furniture
+        // Chair (200) vs Table (200) -> Both equal. Implementation will pick one.
+        assertTrue(result.containsKey("Furniture"));
+        Sale maxFurniture = result.get("Furniture").orElse(null);
+        assertEquals(200.00, maxFurniture.getTotalRevenue(), 0.01);
+
+        // 3. Check Clothing
+        // Only Shirt (100)
+        assertTrue(result.containsKey("Clothing"));
+        Sale maxClothing = result.get("Clothing").orElse(null);
+        assertEquals("Shirt", maxClothing.getProduct());
+    }
 }

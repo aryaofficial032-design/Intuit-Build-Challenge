@@ -59,4 +59,13 @@ public class SalesAnalysisService {
                         Collectors.maxBy(Comparator.comparingDouble(Sale::getTotalRevenue))
                 ));
     }
+
+    public Map<String, Optional<Sale>> getMaxSaleByCategory() {
+        return salesData.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        Sale::getCategory,
+                        Collectors.maxBy(Comparator.comparingDouble(Sale::getTotalRevenue))
+                ));
+    }
 }

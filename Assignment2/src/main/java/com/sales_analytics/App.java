@@ -38,6 +38,14 @@ public class App {
             // 5. Highest Value Sale
             Optional<Sale> topSale = service.findHighestValueSale();
             topSale.ifPresent(s -> System.out.println("\nHighest Value Sale: " + s));
+            //6. Max Sale By Category
+            Map<String, Optional<Sale>> maxByCategory = service.getMaxSaleByCategory();
+            maxByCategory.forEach((category, saleOpt) -> {
+                String saleInfo = saleOpt
+                        .map(s -> String.format("%s ($%.2f)", s.getProduct(), s.getTotalRevenue()))
+                        .orElse("No Sales");
+                System.out.printf("  %s: %s%n", category, saleInfo);
+            });
 
         } catch (IOException e) {
             System.err.println("Error loading CSV file: " + e.getMessage());
