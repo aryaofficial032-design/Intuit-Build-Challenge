@@ -1,4 +1,4 @@
-package com.example.concurrency;
+package com.producerconsumer.concurrency;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
