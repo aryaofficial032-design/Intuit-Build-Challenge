@@ -114,7 +114,9 @@ class SimulationTest {
 
         // Produce 20 items. Initial size 2 will force multiple resizes.
         Thread p = new Thread(new TaskProducer(buffer, 20, 0, "DynP"));
-        Thread c = new Thread(new TaskConsumer(buffer, 20, 10, "DynC"));
+
+        // This forces items to accumulate in the buffer, triggering the resize.
+        Thread c = new Thread(new TaskConsumer(buffer, 20, 100, "DynC"));
 
         startAll(p, c);
         joinAll(p, c);
@@ -122,7 +124,7 @@ class SimulationTest {
         // If we reach here without exceptions, resizing worked in a threaded context
         assertTrue(buffer.isEmpty());
         // Verify it actually grew (Start 2 -> ... -> >2)
-        assertTrue(buffer.getBufferLimit() > 2);
+        assertTrue(buffer.getBufferLimit() > 2, "Buffer did not resize! Consumer might have been too fast.");
     }
 
     // Helper methods to reduce boilerplate
