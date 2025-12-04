@@ -2,15 +2,32 @@ package com.producerconsumer.concurrency;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("=== Starting Concurrency Assignment 1 ===\n");
+        System.out.println("=== Producer-Consumer Application Started ===");
+        System.out.println(">> Mode: Visual Demonstration");
 
-        // Scenario 1: Fixed Buffer blocking logic
-        testFixedBuffer();
+        // 1. Create a fixed-size buffer (Capacity 5)
+        AbstractBuffer<String> demoBuffer = new CircularBuffer<>(5);
 
-        System.out.println("\n----------------------------------\n");
+        // 2. Create Workers
+        // Producer: Generates 10 items, fast (50ms delay)
+        // Consumer: Consumes 10 items, slow (100ms delay) to force the producer to wait
+        Thread producer = new Thread(new TaskProducer(demoBuffer, 10, 50, "Demo-Producer"));
+        Thread consumer = new Thread(new TaskConsumer(demoBuffer, 10, 100, "Demo-Consumer"));
 
-        // Scenario 2: Dynamic Buffer resizing logic
-        testDynamicBuffer();
+        // 3. Start Threads
+        producer.start();
+        consumer.start();
+
+        // 4. Wait for them to finish
+        try {
+            producer.join();
+            consumer.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Main thread interrupted.");
+        }
+
+        System.out.println("=== Demonstration Complete ===");
     }
 
     private static void testFixedBuffer() {
